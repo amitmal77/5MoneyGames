@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amit Malhotra's 5 Games of Money</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Favicon and App Icon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+    <!-- Share cards or social embeds (simplified for single HTML file) -->
+    <meta property="og:title" content="Amit Malhotra's 5 Games of Money">
+    <meta property="og:description" content="Discover the different paths to generating income and building money.">
+    <meta property="og:image" content="https://placehold.co/1200x630/cccccc/333333?text=AMIT%20%20🧭">
+    <meta property="og:url" content="[Your App URL Here]">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The SPA now starts directly with the Main Menu, which includes a brief introduction and is organized into 3 primary sections. Section 1: The 5 Games of Money (direct links to individual Game Details). Section 2: Understanding & Deep Dive (Concepts, How Games Stack Up, Global Participation, Sequence, Characters). Section 3: Conclusion & Assessment (My Strategic Money Playbook, Final Quiz!). This structure prioritizes immediate access to game details and clear, numbered navigation for mobile users, allowing them to jump to any section and return to the main menu easily. -->
+    <!-- Visualization & Content Choices: 1. Main Menu (start screen). Goal: Introduction & Navigation. Presentation: Brief intro text + Grouped list of clickable links/buttons. Interaction: Click to jump to section. Method: HTML/CSS/JS. 2. Individual Game Details (1.1-1.5). Goal: Inform. Presentation: Detailed text with characteristics and examples. Interaction: Back to Main Menu. Method: HTML/CSS/JS. 3. Concepts & Attributes (2.1). Goal: Inform. Presentation: Textual explanation. Interaction: Back to Menu. Method: HTML/CSS/JS. 4. Comparative Profiles (2.2). Goal: Compare. Viz: Matrix/Table with simple ratings. Interaction: View at a glance, Back to Menu. Method: HTML/CSS. 5. Global Participation (2.3). Goal: Inform/Organize. Presentation: Pie Chart. Interaction: Hover for tooltips, Back to Menu. Justification: Pie chart shows proportions clearly. Library: Chart.js (Canvas). 6. Common sequence of money-building (2.4). Goal: Inform. Presentation: Textual explanation with illustrative icons/emojis in a horizontal flow. Interaction: Back to Menu. Method: HTML/CSS. 7. Character Stories (2.5). Goal: Humanize game types. Presentation: Character cards with Q&A. Interaction: Click to interview, Back to Menu. Method: HTML/CSS/JS. 8. My Strategic Money Playbook (3.1). Goal: Personal reflection. Presentation: Text area. Interaction: Type notes, Back to Menu. Method: HTML/CSS/JS. 9. Drag and Drop Quiz (3.2). Goal: Assess understanding. Presentation: Drag-and-drop interface. Interaction: Drag items, submit for score/feedback, Back to Menu. Justification: Interactive assessment. Method: HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4; /* warm neutral */
+            color: #44403C; /* dark neutral */
+        }
+        .screen {
+            display: none; /* Hidden by default */
+            min-height: calc(100vh - 120px); /* Ensure screens take up enough height for mobile scroll */
+            flex-direction: column; /* For flex layout */
+            justify-content: space-between; /* Push footer to bottom */
+        }
+        .screen.active {
+            display: flex; /* Changed to flex for better layout control */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Adjusted max-width for bar chart */
+            height: auto;
+            min-height: 350px; /* Adjusted min-height for bar chart */
+            margin: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                max-width: 900px;
+                min-height: 450px;
+            }
+        }
+        .pie-chart-container { /* New container for pie chart */
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Smaller max-width for pie chart */
+            height: auto;
+            min-height: 300px;
+            margin: auto;
+        }
+        @media (min-width: 768px) {
+            .pie-chart-container {
+                max-width: 400px;
+                min-height: 350px;
+            }
+        }
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .card.active {
+            border-color: #0D9488; /* accent */
+            background-color: #F0FDFA;
+        }
+        .content-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Styling for horizontal sequence */
+        .sequence-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 120px; /* Ensure items don't get too squished */
+        }
+        .sequence-arrow {
+            font-size: 2rem; /* Larger arrow */
+            margin: 0 10px; /* Space between items and arrows */
+            color: #78716C; /* Stone-500 for subtle arrow */
+        }
+        @media (max-width: 767px) {
+            .sequence-container {
+                flex-wrap: wrap; /* Allow wrapping on small screens */
+                justify-content: center;
+            }
+            .sequence-arrow {
+                transform: rotate(90deg); /* Rotate arrow for vertical flow on small screens */
+                margin: 10px 0;
+            }
+        }
+
+        /* Quiz specific styles */
+        .draggable-item {
+            cursor: grab;
+            background-color: #FEFCE8; /* Light yellow for draggable items */
+            border: 1px solid #FDE68A;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+        }
+        .drop-zone {
+            background-color: #F0FDF4; /* Light green for drop zones */
+            border: 2px dashed #34D399;
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 120px; /* Sufficient height for dropped items */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .drop-zone.drag-over {
+            background-color: #D1FAE5; /* Lighter green on drag over */
+            border-color: #059669;
+        }
+        .drop-zone.correct {
+            background-color: #D1FAE5; /* Green for correct */
+            border-color: #059669;
+        }
+        .drop-zone.incorrect {
+            background-color: #FEE2E2; /* Red for incorrect */
+            border-color: #EF4444;
+        }
+        .quiz-feedback-correct {
+            color: #059669; /* Green text */
+            font-weight: 500;
+        }
+        .quiz-feedback-incorrect {
+            color: #EF4444; /* Red text */
+            font-weight: 500;
+        }
+        /* Matrix table styles */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #E7E5E4; /* Stone-200 */
+            padding: 12px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #F0FDF4; /* Light green for headers */
+            font-weight: 600;
+            color: #22C55E; /* Green-500 */
+        }
+        .comparison-table tbody tr:nth-child(even) {
+            background-color: #FAFAFA; /* Light gray for alternating rows */
+        }
+        .comparison-table td {
+            color: #44403C;
+        }
+        .comparison-table td.rating-low { color: #EF4444; font-weight: 500; }
+        .comparison-table td.rating-medium { color: #F59E0B; font-weight: 500; }
+        .comparison-table td.rating-high { color: #10B981; font-weight: 500; }
+        .comparison-table td.rating-very-high { color: #059669; font-weight: 500; }
+        .comparison-table td.rating-low-medium { color: #F59E0B; font-weight: 500; } /* For Low-Medium */
+        .comparison-table td.rating-medium-high { color: #10B981; font-weight: 500; } /* For Medium-High */
+
+        /* Compass Icon Animation */
+        @keyframes rotateCompass {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .compass-icon {
+            display: inline-block;
+            animation: rotateCompass 10s linear infinite; /* Subtle continuous rotation */
+            transform-origin: center center;
+            font-size: 1.5em; /* Adjust size as needed */
+            margin-right: 8px;
+        }
+        .compass-icon:hover {
+            animation: none; /* Stop rotation on hover */
+            filter: drop-shadow(0 0 5px rgba(0, 128, 128, 0.5)); /* Teal glow on hover */
+        }
+
+        /* Responsive Navigation Buttons in Main Menu */
+        .nav-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            min-height: 80px; /* Ensure touch target size */
+            font-size: 1.125rem; /* text-lg */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        @media (max-width: 639px) { /* Small screens (mobile) */
+            .nav-button {
+                min-height: 60px; /* Slightly smaller for very small screens */
+                font-size: 1rem; /* text-base */
+            }
+        }
+        /* New styles for grouped menu sections */
+        .menu-section-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #44403C; /* stone-800 */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%; /* Ensure it spans full width in grid */
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+            gap: 1.5rem; /* gap-6 */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) { /* lg breakpoint */
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-800 mb-2">
+                <span class="compass-icon">🧭</span>AMIT's 5 Games of Money
+            </h1>
+            <p class="text-lg text-stone-600">Discover the different paths to generating income and building money.</p>
+        </header>
+
+        <main>
+            <!-- Screen 1: Main Menu (Now the start screen) -->
+            <section id="screen-main-menu" class="screen active bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">Welcome to the Games of Money!</h2>
+                <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+                    This interactive guide will introduce you to five distinct approaches to generating income and building long-term money. Understanding these "games" can help you identify strategies that align with your goals and risk tolerance. Explore the sections below to dive deeper.
+                </p>
+
+                <div class="flex flex-col items-center w-full">
+                    <div class="menu-section-title">Section 1: The 5 Games of Money</div>
+                    <div class="menu-grid w-full">
+                        <button class="nav-button bg-green-100 text-green-800 hover:bg-green-200" data-target-screen="screen-wage-details">
+                            1.1. Wage Game
+                        </button>
+                        <button class="nav-button bg-green-100 text-green-800 hover:bg-green-200" data-target-screen="screen-commission-details">
+                            1.2. Commission Game
+                        </button>
+                        <button class="nav-button bg-green-100 text-green-800 hover:bg-green-200" data-target-screen="screen-scalable-details">
+                            1.3. Scalable Business Game
+                        </button>
+                        <button class="nav-button bg-green-100 text-green-800 hover:bg-green-200" data-target-screen="screen-asset-details">
+                            1.4. Asset Ownership Game
+                        </button>
+                        <button class="nav-button bg-green-100 text-green-800 hover:bg-green-200" data-target-screen="screen-sovereign-details">
+                            1.5. Sovereign/Extraction Game
+                        </button>
+                    </div>
+
+                    <div class="menu-section-title">Section 2: Understanding & Deep Dive</div>
+                    <div class="menu-grid w-full">
+                        <button class="nav-button bg-blue-100 text-blue-800 hover:bg-blue-200" data-target-screen="screen-concepts">
+                            2.1. Concepts & Attributes
+                        </button>
+                        <button class="nav-button bg-blue-100 text-blue-800 hover:bg-blue-200" data-target-screen="screen-comparison">
+                            2.2. How Games Stack Up
+                        </button>
+                        <button class="nav-button bg-blue-100 text-blue-800 hover:bg-blue-200" data-target-screen="screen-distribution">
+                            2.3. Global Participation
+                        </button>
+                        <button class="nav-button bg-blue-100 text-blue-800 hover:bg-blue-200" data-target-screen="screen-sequence">
+                            2.4. Sequence of Play
+                        </button>
+                        <button class="nav-button bg-blue-100 text-blue-800 hover:bg-blue-200" data-target-screen="screen-characters">
+                            2.5. Character Stories
+                        </button>
+                    </div>
+
+                    <div class="menu-section-title">Section 3: Conclusion & Assessment</div>
+                    <div class="menu-grid w-full">
+                        <button class="nav-button bg-purple-100 text-purple-800 hover:bg-purple-200" data-target-screen="screen-playbook">
+                            3.1. My Strategic Money Playbook
+                        </button>
+                        <button class="nav-button bg-teal-100 text-teal-800 hover:bg-teal-200" data-target-screen="screen-quiz">
+                            3.2. Final Quiz!
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Individual Game Detail Screens (1.1, 1.2, etc.) -->
+            <section id="screen-wage-details" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">1.1. 💼 Wage Game Details</h2>
+                <div id="screen-wage-details-content" class="content-fade-in">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Main Menu
+                    </button>
+                </div>
+            </section>
+
+            <section id="screen-commission-details" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">1.2. 📈 Commission Game Details</h2>
+                <div id="screen-commission-details-content" class="content-fade-in">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Main Menu
+                    </button>
+                </div>
+            </section>
+
+            <section id="screen-scalable-details" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">1.3. 🚀 Scalable Business Game Details</h2>
+                <div id="screen-scalable-details-content" class="content-fade-in">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Main Menu
+                    </button>
+                </div>
+            </section>
+
+            <section id="screen-asset-details" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">1.4. 🏛️ Asset Ownership Game Details</h2>
+                <div id="screen-asset-details-content" class="content-fade-in">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Main Menu
+                    </button>
+                </div>
+            </section>
+
+            <section id="screen-sovereign-details" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">1.5. 👑 Sovereign/Extraction Game Details</h2>
+                <div id="screen-sovereign-details-content" class="content-fade-in">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Main Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 2.1: Concepts & Attributes -->
+            <section id="screen-concepts" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">2.1. Understanding the Foundations</h2>
+                <p class="text-center text-stone-600 mb-6 max-w-3xl mx-auto">
+                    Money creation isn't a single path. It involves engaging in different "games," each with its own rules and dynamics. We'll analyze these games based on four core attributes:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-8">
+                    <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-stone-700 text-xl mb-2">Scalability</h3>
+                        <p class="text-stone-600 text-sm">The potential for growth without proportional increase in effort.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-stone-700 text-xl mb-2">Passive Potential</h3>
+                        <p class="text-stone-600 text-sm">The degree to which income can be generated with minimal ongoing effort.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-stone-700 text-xl mb-2">Risk</h3>
+                        <p class="text-stone-600 text-sm">The level of financial exposure or uncertainty involved.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-stone-700 text-xl mb-2">Upfront Effort</h3>
+                        <p class="text-stone-600 text-sm">The initial time, capital, or energy required to get started.</p>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 2.2: Game Profiles by Attribute (Matrix/Table) -->
+            <section id="screen-comparison" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">2.2. How the Games Stack Up</h2>
+                <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+                    Each game has a different mix of how much effort you put in, how much money it can make, and how risky it is. Here's a simple way to see how they compare:
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Game Type</th>
+                                <th>Scalability</th>
+                                <th>Passive Potential</th>
+                                <th>Risk</th>
+                                <th>Upfront Effort</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-semibold">💼 Wage Game</td>
+                                <td class="rating-low">Low</td>
+                                <td class="rating-low">Low</td>
+                                <td class="rating-low">Low</td>
+                                <td class="rating-low">Low</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">📈 Commission Game</td>
+                                <td class="rating-medium">Medium</td>
+                                <td class="rating-low">Low</td>
+                                <td class="rating-medium">Medium</td>
+                                <td class="rating-medium">Medium</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">🚀 Scalable Business Game</td>
+                                <td class="rating-high">High</td>
+                                <td class="rating-high">High</td>
+                                <td class="rating-high">High</td>
+                                <td class="rating-high">High</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">🏛️ Asset Ownership Game</td>
+                                <td class="rating-medium-high">Medium-High</td>
+                                <td class="rating-very-high">Very High</td>
+                                <td class="rating-medium">Medium</td>
+                                <td class="rating-medium">Medium</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">👑 Sovereign/Extraction Game</td>
+                                <td class="rating-very-high">Very High</td>
+                                <td class="rating-very-high">Very High</td>
+                                <td class="rating-low-medium">Low-Medium</td>
+                                <td class="rating-very-high">Very High</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 2.3: Global Participation (Pie Chart) -->
+            <section id="screen-distribution" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">2.3. 🌍 Global Human Economic Participation</h2>
+                <p class="text-center text-stone-600 mb-6 max-w-3xl mx-auto">
+                    Here’s a reasoned estimate of global human economic participation across the five game types. These are not precise statistics, but strategic approximations based on global labor data, money distribution studies, and economic structure insights.
+                </p>
+                <div class="pie-chart-container">
+                    <canvas id="populationPieChart"></canvas>
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-2c-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 2.4: Sequence of Play -->
+            <section id="screen-sequence" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">2.4. 🪜 Sequence of Play (Often)</h2>
+                <p class="text-center text-stone-600 mb-6 max-w-3xl mx-auto">
+                    Many successful money-builders follow a common progression through these game types. This sequence often optimizes for building capital and then transitioning to more passive forms of money generation.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center text-stone-700 text-lg">
+                    <div class="sequence-item">
+                        <span class="text-3xl">💼</span>
+                        <span class="font-semibold">Wage Game</span>
+                    </div>
+                    <span class="sequence-arrow">➡️</span>
+                    <div class="sequence-item">
+                        <span class="text-3xl">📈</span>
+                        <span class="font-semibold">Commission Game</span>
+                    </div>
+                    <span class="sequence-arrow">➡️</span>
+                    <div class="sequence-item">
+                        <span class="text-3xl">🚀</span>
+                        <span class="font-semibold">Scalable Business Game</span>
+                    </div>
+                    <span class="sequence-arrow">➡️</span>
+                    <div class="sequence-item">
+                        <span class="text-3xl">🏛️</span>
+                        <span class="font-semibold">Asset Ownership Game</span>
+                    </div>
+                </div>
+                <p class="text-stone-600 mt-6 text-center max-w-2xl mx-auto">
+                    Eventually, they exit operations and live off owned assets.
+                </p>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 2.5: Game Character Stories -->
+            <section id="screen-characters" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">2.5. 🧑‍🤝‍🧑 Game Character Stories</h2>
+                <p class="text-center text-stone-600 mb-6 max-w-3xl mx-auto">
+                    Meet some characters playing different games of money. Click on them to learn about their lives and ask them questions!
+                </p>
+                <div id="character-selector" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                    <!-- Character cards will be populated here by JS -->
+                </div>
+                <div id="character-details-display" class="bg-stone-50 rounded-xl shadow-sm p-6 lg:p-8 min-h-[300px] hidden">
+                    <h3 id="character-name" class="text-2xl font-bold text-stone-800 mb-4"></h3>
+                    <p id="character-story" class="text-stone-600 mb-6"></p>
+                    <h4 class="font-semibold text-stone-700 mb-2">Ask a Question:</h4>
+                    <div id="character-questions" class="space-y-2">
+                        <!-- Questions will be populated by JS -->
+                    </div>
+                    <p id="character-answer" class="mt-4 text-stone-600 italic"></p>
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 3.1: My Strategic Money Playbook -->
+            <section id="screen-playbook" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">3.1. 📓 My Strategic Money Playbook</h2>
+                <p class="text-center text-stone-600 mb-6 max-w-3xl mx-auto">
+                    This is your space to reflect on what you've learned. Jot down your thoughts, goals, and strategies for playing the games of money.
+                </p>
+                <div class="bg-stone-50 rounded-lg shadow-inner p-6">
+                    <div class="mb-4">
+                        <label for="playbook-q1" class="block text-stone-700 text-md font-semibold mb-2">Which game is your family playing?</label>
+                        <textarea id="playbook-q1" class="shadow appearance-none border rounded w-full py-2 px-3 text-stone-700 leading-tight focus:outline-none focus:shadow-outline h-24" placeholder="Write your thoughts here..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="playbook-q2" class="block text-stone-700 text-md font-semibold mb-2">What game do you want to master—and why?</label>
+                        <textarea id="playbook-q2" class="shadow appearance-none border rounded w-full py-2 px-3 text-stone-700 leading-tight focus:outline-none focus:shadow-outline h-24" placeholder="Write your thoughts here..."></textarea>
+                    </div>
+                    <div>
+                        <label for="playbook-notes" class="block text-stone-700 text-md font-semibold mb-2">Any other notes or ideas?</label>
+                        <textarea id="playbook-notes" class="shadow appearance-none border rounded w-full py-2 px-3 text-stone-700 leading-tight focus:outline-none focus:shadow-outline h-32" placeholder="Your strategic notes..."></textarea>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-4">Your notes are saved in your browser, but won't be here forever!</p>
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+
+            <!-- Screen 3.2: Drag and Drop Quiz -->
+            <section id="screen-quiz" class="screen bg-white rounded-xl shadow-sm p-6 lg:p-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-stone-800 mb-4">3.2. Test Your Knowledge: Match the Game Type!</h2>
+                <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+                    Drag each definition to its correct game type bucket. Once all are placed, click "Submit Answers" to see your score and feedback.
+                </p>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Draggable Definitions Area -->
+                    <div class="lg:w-1/3 p-4 bg-stone-50 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-stone-700 mb-4">Definitions</h3>
+                        <div id="definitions-container" class="space-y-3">
+                            <!-- Draggable items will be populated here by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Drop Zones Area -->
+                    <div class="lg:w-2/3 p-4 bg-stone-50 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-stone-700 mb-4">Game Types</h3>
+                        <div id="drop-zones-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Drop zones will be populated here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-8 space-x-4">
+                    <button id="submit-quiz-btn" class="px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-75 transition-colors" disabled>
+                        Submit Answers
+                    </button>
+                </div>
+
+                <div id="quiz-results" class="mt-8 p-6 bg-stone-50 rounded-lg shadow-inner hidden">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-4">Quiz Results</h3>
+                    <p id="quiz-score" class="text-lg font-bold mb-4"></p>
+                    <div id="quiz-feedback" class="space-y-3">
+                        <!-- Feedback for each answer will appear here -->
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 bg-stone-300 text-stone-800 font-semibold rounded-lg shadow-md hover:bg-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-75 transition-colors" onclick="navigateToScreenId('screen-main-menu')">
+                        Back to Menu
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 py-6 border-t border-stone-200">
+            <p class="text-stone-500">An interactive exploration of money creation models by AMIT.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const gameData = [
+            {
+                id: 'wage',
+                name: 'Wage Game',
+                icon: '💼',
+                definition: 'Trade time and skill for a fixed income within a structured role.',
+                description: 'In this game, you exchange your time, skills, and effort for a predetermined, fixed income. You operate within an established structure, typically as an employee.',
+                characteristics: [
+                    'Predictable income, often with benefits.',
+                    'Limited direct control over income growth beyond promotions or raises.',
+                    'Low personal financial risk.'
+                ],
+                examplesList: [
+                    'Software Engineer', 'Teacher', 'Nurse', 'Accountant', 'Retail Associate',
+                    'Customer Service Representative', 'Factory Worker', 'Government Employee',
+                    'Journalist', 'Graphic Designer (salaried)'
+                ],
+                metrics: {
+                    scalability: 'Low',
+                    passivePotential: 'Low',
+                    risk: 'Low',
+                    upfrontEffort: 'Low'
+                },
+                population: {
+                    percentage: 65,
+                    range: '~60–70%',
+                    notes: 'Dominant model globally. Most people trade time for income—factory workers, teachers, service staff, bureaucrats.'
+                },
+                simulator: {
+                    timeCommitment: '40 hours/week, fixed schedule',
+                    incomePotential: { low: '$30K/year', medium: '$60K/year', high: '$120K+/year' },
+                    riskReward: 'Low risk, stable income, limited upside.',
+                    persona: 'A recent grad starting their first full-time job. They value stability and learning on the job.'
+                },
+                character: {
+                    name: 'Sarah, The Steady Starter',
+                    story: 'Sarah works as a junior software developer. She enjoys the stability and learning new things every day. Her income is steady, but she knows growth is tied to promotions and raises.',
+                    questions: [
+                        { q: 'What do you like most about your job?', a: 'I love the predictable paycheck and knowing exactly what my responsibilities are. It helps me plan my life and save up.' },
+                        { q: 'What\'s the hardest part?', a: 'My income growth is pretty slow, and I have to trade a lot of my time for money. It feels like I can only earn more if I work more hours or get a promotion.' }
+                    ]
+                }
+            },
+            {
+                id: 'commission',
+                name: 'Commission Game',
+                icon: '📈',
+                definition: 'Earn based on performance or outcomes with variable upside.',
+                description: 'Your earnings in this game are directly tied to your performance, sales, or the outcomes you achieve. There\'s a variable upside, meaning your income can fluctuate significantly based on your output.',
+                characteristics: [
+                    'High potential for income growth if performance is strong.',
+                    'Higher risk due to income variability.',
+                    'Direct link between effort and reward.'
+                ],
+                examplesList: [
+                    'Real Estate Agent', 'Sales Representative (commission-based)', 'Insurance Broker',
+                    'Freelance Writer (per article)', 'Gig Economy Driver (per ride/delivery)',
+                    'Stock Broker (commission on trades)', 'Recruitment Consultant (per placement)',
+                    'Affiliate Marketer (per sale)', 'Photographer (per shoot)', 'Personal Trainer (per session)'
+                ],
+                metrics: {
+                    scalability: 'Medium',
+                    passivePotential: 'Low',
+                    risk: 'Medium',
+                    upfrontEffort: 'Medium'
+                },
+                population: {
+                    percentage: 12.5,
+                    range: '~10–15%',
+                    notes: 'Common in sales, real estate, gig economy, and entrepreneurial hustles. More common in emerging markets and informal economies.'
+                },
+                simulator: {
+                    timeCommitment: 'Variable, often long hours initially',
+                    incomePotential: { low: '$20K/year', medium: '$70K/year', high: '$200K+/year' },
+                    riskReward: 'Higher risk, but high potential reward tied to performance.',
+                    persona: 'A driven individual who loves connecting with people and thrives on hitting targets.'
+                },
+                character: {
+                    name: 'Mark, The Master Closer',
+                    story: 'Mark is a real estate agent. His income isn\'t fixed; it depends on how many houses he sells. He works long hours, but a big commission check makes it all worth it.',
+                    questions: [
+                        { q: 'What drives you in your work?', a: 'I love that my effort directly translates to my earnings. The more deals I close, the more money I make. It\'s exciting!' },
+                        { q: 'What\'s the hardest part?', a: 'Some months are amazing, and some are really slow. It can be stressful not knowing exactly how much I\'ll earn, and I\'m always hustling for the next client.' }
+                    ]
+                }
+            },
+            {
+                id: 'scalable',
+                name: 'Scalable Business',
+                icon: '🚀',
+                definition: 'Build systems that generate revenue independent of personal effort.',
+                description: 'This involves creating systems or businesses that can generate revenue and grow without requiring a proportional increase in your personal time or direct effort. The focus is on building infrastructure that can serve many.',
+                characteristics: [
+                    'Significant upfront effort and risk.',
+                    'Immense potential for exponential growth.',
+                    'Can generate passive income once established.'
+                ],
+                examplesList: [
+                    'SaaS (Software as a Service) Founder', 'E-commerce Store Owner (dropshipping/inventory)',
+                    'Digital Course Creator', 'App Developer', 'Franchise Owner (multiple locations)',
+                    'Subscription Box Service', 'Content Platform Creator (e.g., YouTube channel with ads/sponsors)',
+                    'Online Community Builder', 'Productized Service Agency', 'Automated Marketing Agency'
+                ],
+                metrics: {
+                    scalability: 'High',
+                    passivePotential: 'High',
+                    risk: 'High',
+                    upfrontEffort: 'High'
+                },
+                population: {
+                    percentage: 2,
+                    range: '~1–3%',
+                    notes: 'Entrepreneurs building scalable systems—startups, digital products, franchises. Most fail to scale significantly.'
+                },
+                simulator: {
+                    timeCommitment: 'Intense, unpredictable initial phase; can become flexible later',
+                    incomePotential: { low: '$0', medium: '$100K/year', high: '$1M+/year' },
+                    riskReward: 'Very high risk, but unlimited upside potential.',
+                    persona: 'A visionary who loves solving problems and building things from scratch, willing to take big risks for big rewards.'
+                },
+                character: {
+                    name: 'Alex, The Innovator',
+                    story: 'Alex started an app that helps students learn. It took years of hard work and no pay, but now the app has millions of users, and Alex earns money even while traveling.',
+                    questions: [
+                        { q: 'What was it like starting out?', a: 'Super tough! I worked day and night, invested all my savings, and faced many rejections. There were times I thought about giving up.' },
+                        { q: 'What\'s the best part now?', a: 'The freedom! My business runs largely on its own, and I can focus on new ideas or simply enjoy my time. The impact my app has on so many people is also amazing.' }
+                    ]
+                }
+            },
+            {
+                id: 'asset',
+                name: 'Asset Ownership',
+                icon: '🏛️',
+                definition: 'Accumulate and hold appreciating assets that generate passive returns.',
+                description: 'The objective here is is to acquire and hold assets that increase in value over time and/or generate recurring passive income. The focus is on capital appreciation and yield.',
+                characteristics: [
+                    'Requires initial capital investment.',
+                    'Long-term perspective and understanding of market dynamics.',
+                    'Income can be truly passive.'
+                ],
+                examplesList: [
+                    'Real Estate Investor (rental properties)', 'Stock Investor (dividend stocks)',
+                    'Bond Investor', 'Intellectual Property Owner (patents, copyrights, royalties)',
+                    'Farmland Owner', 'Forestry Land Owner', 'Art Collector (for appreciation)',
+                    'Venture Capitalist (investing in startups)', 'Private Equity Investor', 'Mineral Rights Owner'
+                ],
+                metrics: {
+                    scalability: 'Medium-High',
+                    passivePotential: 'Very High',
+                    risk: 'Medium',
+                    upfrontEffort: 'Medium'
+                },
+                population: {
+                    percentage: 7.5,
+                    range: '~5–10% (with wide inequality)',
+                    notes: 'Includes landlords, stockholders, farmers with land. A small % control large asset bases; majority own minimal assets (e.g. a home).'
+                },
+                simulator: {
+                    timeCommitment: 'Low, primarily monitoring and strategic decisions',
+                    incomePotential: { low: '$5K/year', medium: '$50K/year', high: '$500K+/year' },
+                    riskReward: 'Moderate risk, but income can be very passive and grow over time.',
+                    persona: 'Someone who has accumulated capital and wants their money to work for them, valuing long-term growth and passive income.'
+                },
+                character: {
+                    name: 'Maria, The Smart Investor',
+                    story: 'Maria owns several rental properties and a diverse stock portfolio. She spends her time researching new investments and and enjoying her hobbies, as her assets generate income for her.',
+                    questions: [
+                        { q: 'How did you get started?', a: 'I saved diligently from my early jobs and invested consistently. It took time, but compounding interest and property appreciation really added up.' },
+                        { q: 'What\'s your daily routine like?', a: 'I mostly monitor my investments and read a lot about markets. I have property managers, so I don\'t deal with tenants directly. It\'s a very flexible lifestyle.' }
+                    ]
+                }
+            },
+            {
+                id: 'sovereign',
+                name: 'Sovereign Game',
+                icon: ' ',
+                definition: 'Control natural or institutional resources that produce outsized, persistent value.',
+                description: 'This game involves gaining control over unique or foundational resources, whether natural or institutional. This control allows for the extraction of outsized and persistent value.',
+                characteristics: [
+                    'Often involves significant power, influence, or unique access.',
+                    'Can lead to very high, sustained returns due to scarcity or control.',
+                    'Extremely high barriers to entry.'
+                ],
+                examplesList: [
+                    'Monarch/Royal Family (controlling state resources)', 'Oligarch (controlling national industries)',
+                    'Central Bank Governor (controlling monetary policy)', 'Head of State/Dictator',
+                    'Founder of a Global Standard-Setting Body', 'Owner of a Critical Infrastructure Monopoly (e.g., national grid)',
+                    'Cartel Leader (controlling a commodity market)', 'Key Regulatory Body Head',
+                    'Major Landowner with Resource Rights', 'International Treaty Negotiator (influencing global trade)'
+                ],
+                metrics: {
+                    scalability: 'Very High',
+                    passivePotential: 'Very High',
+                    risk: 'Low-Medium',
+                    upfrontEffort: 'Very High'
+                },
+                population: {
+                    percentage: 0.05,
+                    range: '<0.1%',
+                    notes: 'Held by state actors, oligarchs, monarchs, and institutional elites who control natural or monetary resource systems.'
+                },
+                simulator: {
+                    timeCommitment: 'High influence, strategic, but often not daily operations',
+                    incomePotential: { low: '$1M/year', medium: '$10M/year', high: '$100M+/year' },
+                    riskReward: 'Low risk once established, but extremely high barriers to entry and potential for political upheaval.',
+                    persona: 'An individual or family with generational power or unique control over a critical resource, focused on maintaining and expanding their influence.'
+                },
+                character: {
+                    name: 'The Sovereign Family',
+                    story: 'The Sovereign family has held control over a vital natural resource for generations. Their influence shapes national policy, and their wealth is immense, stemming from their unique position.',
+                    questions: [
+                        { q: 'How did your family achieve this position?', a: 'It was built over many generations, through strategic alliances, control of key resources, and deep understanding of political and economic systems.' },
+                        { q: 'What\'s the responsibilities of your role?', a: 'While the financial returns are vast, there\'s immense responsibility in managing such critical resources and maintaining stability. It\'s about long-term stewardship and influence.' }
+                    ]
+                }
+            }
+        ];
+
+        const screens = [
+            'screen-main-menu', // Now the start screen
+            'screen-wage-details', 'screen-commission-details', 'screen-scalable-details', 'screen-asset-details', 'screen-sovereign-details', // Section 1: The 5 Games of Money
+            'screen-concepts', 'screen-comparison', 'screen-distribution', 'screen-sequence', 'screen-characters', // Section 2: Understanding Differences & Tradeoffs
+            'screen-playbook', // Section 3: Your Strategic Play & Assessment
+            'screen-quiz' // Final Quiz
+        ];
+        let currentScreenIndex = 0;
+        let populationPieChartInstance = null;
+
+        // Quiz specific variables
+        let draggedItem = null;
+        const userAnswers = {};
+        let definitionsPlaced = 0;
+        const totalDefinitions = gameData.length;
+
+        function showScreen(index) {
+            console.log(`[showScreen] Attempting to show screen index: ${index}, ID: ${screens[index]}`);
+            screens.forEach((screenId, i) => {
+                const screenElement = document.getElementById(screenId);
+                console.log(`[showScreen] Processing ID: ${screenId}, Element found: ${!!screenElement}`);
+                if (screenElement) {
+                    if (i === index) {
+                        screenElement.classList.add('active');
+                        window.scrollTo(0, 0);
+                    } else {
+                        screenElement.classList.remove('active');
+                    }
+                } else {
+                    console.warn(`[showScreen] Screen element with ID '${screenId}' not found.`);
+                }
+            });
+            currentScreenIndex = index;
+
+            if (populationPieChartInstance && screens[index] !== 'screen-distribution') {
+                populationPieChartInstance.destroy();
+                populationPieChartInstance = null;
+            }
+
+            if (screens[index] === 'screen-distribution' && !populationPieChartInstance) {
+                setupPopulationPieChart();
+            }
+            if (screens[index].includes('-details')) {
+                const gameId = screens[index].replace('screen-', '').replace('-details', '');
+                displayGameDetailsById(gameId);
+            }
+            if (screens[index] === 'screen-characters') {
+                setupCharacterStories();
+            }
+            if (screens[index] === 'screen-quiz') {
+                initializeQuiz();
+            }
+        }
+
+        function navigateToScreenId(targetScreenId) {
+            console.log(`[navigateToScreenId] Attempting to navigate to: '${targetScreenId}'`);
+            console.log(`[navigateToScreenId] Current screens array:`, screens);
+            const cleanTargetScreenId = targetScreenId.trim();
+            const targetIndex = screens.indexOf(cleanTargetScreenId);
+            if (targetIndex !== -1) {
+                showScreen(targetIndex);
+            } else {
+                console.error(`[navigateToScreenId] ERROR: Attempted to navigate to unknown screen: '${cleanTargetScreenId}'`);
+            }
+        }
+
+        function displayGameDetailsById(gameId) {
+            const game = gameData.find(g => g.id === gameId);
+            const contentDiv = document.getElementById(`screen-${gameId}-details-content`); 
+            if (!game || !contentDiv) {
+                console.error(`[displayGameDetailsById] Game data or content div not found for gameId: ${gameId} (expected contentDiv ID: screen-${gameId}-details-content)`);
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <div class="content-fade-in">
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">${game.icon}</span>
+                        ${game.name}
+                    </h3>
+                    <p class="text-stone-600 mb-6">${game.description}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-stone-700 mb-2">Key Characteristics</h4>
+                            <ul class="list-disc list-inside text-stone-600 space-y-1">
+                                ${game.characteristics.map(c => `<li>${c}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-stone-700 mb-2">Examples of Roles/Ideas</h4>
+                            <ul class="list-disc list-inside text-stone-600 space-y-1">
+                                ${game.examplesList.map(ex => `<li>${ex}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupPopulationPieChart() {
+            const ctx = document.getElementById('populationPieChart').getContext('2d');
+            const labels = gameData.map(g => g.name);
+            
+            const originalPercentages = gameData.map(g => g.population.percentage);
+            const totalOriginal = originalPercentages.reduce((sum, val) => sum + val, 0);
+            const normalizedPercentages = originalPercentages.map(p => (p / totalOriginal) * 100);
+
+            const backgroundColors = [
+                'rgba(59, 130, 246, 0.7)',
+                'rgba(16, 185, 129, 0.7)',
+                'rgba(249, 115, 22, 0.7)',
+                'rgba(147, 51, 234, 0.7)',
+                'rgba(239, 68, 68, 0.7)'
+            ];
+            const borderColors = [
+                'rgba(59, 130, 246, 1)',
+                'rgba(16, 185, 129, 1)',
+                'rgba(249, 115, 22, 1)',
+                'rgba(147, 51, 234, 1)',
+                'rgba(239, 68, 68, 1)'
+            ];
+
+            if (populationPieChartInstance) {
+                populationPieChartInstance.destroy();
+            }
+
+            populationPieChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: normalizedPercentages, 
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#44403C',
+                                font: {
+                                    size: 12
+                                },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        const dataset = data.datasets[0]; 
+                                        return data.labels.map(function(label, i) {
+                                            const value = dataset.data[i];
+                                            const correspondingGame = gameData.find(g => g.name === label);
+                                            const range = correspondingGame ? correspondingGame.population.range : '';
+                                            
+                                            return {
+                                                text: `${label}: ${range}`, 
+                                                fillStyle: dataset.backgroundColor[i], 
+                                                strokeStyle: dataset.borderColor[i], 
+                                                lineWidth: dataset.borderWidth, 
+                                                hidden: !chart.isDatasetVisible(0) || dataset.data[i] === 0,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                    return [];
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.parsed; 
+                                    const correspondingGame = gameData.find(g => g.name === context.label);
+                                    const originalRange = correspondingGame ? correspondingGame.population.range : '';
+                                    const notes = correspondingGame ? correspondingGame.population.notes : '';
+                                    return [`${label}${value.toFixed(1)}% (Original: ${originalRange})`, notes];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupCharacterStories() {
+            const characterSelector = document.getElementById('character-selector');
+            const characterDetailsDisplay = document.getElementById('character-details-display');
+            const characterName = document.getElementById('character-name');
+            const characterStory = document.getElementById('character-story');
+            const characterQuestionsDiv = document.getElementById('character-questions');
+            const characterAnswer = document.getElementById('character-answer');
+
+            characterSelector.innerHTML = '';
+            characterDetailsDisplay.classList.add('hidden');
+
+            gameData.forEach(game => {
+                if (game.character) {
+                    const card = document.createElement('div');
+                    card.className = 'card cursor-pointer p-4 border-2 border-stone-200 rounded-lg bg-white text-center';
+                    card.innerHTML = `
+                        <div class="text-3xl mb-2">${game.icon}</div>
+                        <div class="font-semibold text-stone-700">${game.character.name.split(',')[0]}</div>
+                        <div class="text-sm text-stone-500">${game.name}</div>
+                    `;
+                    card.addEventListener('click', () => {
+                        displayCharacterDetails(game);
+                    });
+                    characterSelector.appendChild(card);
+                }
+            });
+
+            function displayCharacterDetails(characterGame) {
+                characterDetailsDisplay.classList.remove('hidden');
+                characterName.textContent = characterGame.character.name;
+                characterStory.textContent = characterGame.character.story;
+                characterQuestionsDiv.innerHTML = '';
+                characterAnswer.textContent = '';
+
+                characterGame.character.questions.forEach((q, index) => {
+                    const questionButton = document.createElement('button');
+                    questionButton.className = 'block w-full text-left px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-stone-700';
+                    questionButton.textContent = q.q;
+                    questionButton.addEventListener('click', () => {
+                        characterAnswer.textContent = `"${q.a}"`;
+                    });
+                    characterQuestionsDiv.appendChild(questionButton);
+                });
+
+                document.querySelectorAll('#character-selector .card').forEach(card => {
+                    card.classList.toggle('active', card.dataset.id === characterGame.id);
+                });
+            }
+        }
+
+        function initializeQuiz() {
+            const definitionsContainer = document.getElementById('definitions-container');
+            const dropZonesContainer = document.getElementById('drop-zones-container');
+            const submitButton = document.getElementById('submit-quiz-btn');
+            const quizResults = document.getElementById('quiz-results');
+            const quizScore = document.getElementById('quiz-score');
+            const quizFeedback = document.getElementById('quiz-feedback');
+
+            definitionsContainer.innerHTML = '';
+            dropZonesContainer.innerHTML = '';
+            if (quizScore) quizScore.textContent = '';
+            if (quizFeedback) quizFeedback.innerHTML = '';
+            if (quizResults) quizResults.classList.add('hidden');
+
+            submitButton.disabled = true;
+            definitionsPlaced = 0;
+            Object.keys(userAnswers).forEach(key => delete userAnswers[key]);
+
+            const shuffledDefinitions = [...gameData].sort(() => Math.random() - 0.5);
+
+            shuffledDefinitions.forEach(game => {
+                const draggable = document.createElement('div');
+                draggable.className = 'draggable-item p-3 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm cursor-grab';
+                draggable.setAttribute('draggable', true);
+                draggable.dataset.id = game.id;
+                draggable.textContent = game.definition;
+                definitionsContainer.appendChild(draggable);
+
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedItem = e.target;
+                    e.dataTransfer.setData('text/plain', e.target.dataset.id);
+                    e.target.classList.add('opacity-50');
+                });
+
+                draggable.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('opacity-50');
+                });
+            });
+
+            gameData.forEach(game => {
+                const dropZone = document.createElement('div');
+                dropZone.className = 'drop-zone p-4 border-2 border-dashed border-green-300 rounded-lg flex flex-col items-center justify-content-center min-h-[120px]';
+                dropZone.dataset.id = game.id;
+                dropZone.innerHTML = `<span class="font-semibold text-stone-700 text-lg mb-2">${game.name}</span><div class="dropped-item-placeholder text-sm text-stone-500">Drag definition here</div>`;
+                dropZonesContainer.appendChild(dropZone);
+
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const targetDropZone = e.target.closest('.drop-zone');
+                    if (targetDropZone) {
+                        targetDropZone.classList.add('drag-over');
+                    }
+                });
+
+                dropZone.addEventListener('dragleave', (e) => {
+                    const targetDropZone = e.target.closest('.drop-zone');
+                    if (targetDropZone) {
+                        targetDropZone.classList.remove('drag-over');
+                    }
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const targetDropZone = e.target.closest('.drop-zone');
+                    if (targetDropZone) {
+                        targetDropZone.classList.remove('drag-over');
+                        
+                        const existingItem = targetDropZone.querySelector('.draggable-item');
+                        if (existingItem) {
+                            definitionsContainer.appendChild(existingItem);
+                            delete userAnswers[targetDropZone.dataset.id];
+                            definitionsPlaced--;
+                        }
+
+                        if (draggedItem) {
+                            targetDropZone.innerHTML = `<span class="font-semibold text-stone-700 text-lg mb-2">${game.name}</span>`;
+                            targetDropZone.appendChild(draggedItem);
+                            userAnswers[targetDropZone.dataset.id] = draggedItem.dataset.id;
+                            definitionsPlaced++;
+                            checkQuizCompletion();
+                        }
+                    }
+                });
+            });
+
+            submitButton.addEventListener('click', submitQuiz);
+        }
+
+        function checkQuizCompletion() {
+            const submitButton = document.getElementById('submit-quiz-btn');
+            if (definitionsPlaced === totalDefinitions) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        function submitQuiz() {
+            const quizResults = document.getElementById('quiz-results');
+            const quizScore = document.getElementById('quiz-score');
+            const quizFeedback = document.getElementById('quiz-feedback');
+
+            if (!quizResults || !quizScore || !quizFeedback) {
+                console.error("Error: One or more quiz result elements (quizResults, quizScore, or quizFeedback) not found in DOM when submitting quiz.");
+                return;
+            }
+
+            quizFeedback.innerHTML = '';
+            quizScore.textContent = '';
+            quizResults.classList.remove('hidden');
+
+            let score = 0;
+            gameData.forEach(game => {
+                const dropZoneElement = document.querySelector(`.drop-zone[data-id="${game.id}"]`);
+                const droppedItemId = userAnswers[game.id];
+                const feedbackItem = document.createElement('div');
+
+                const droppedGame = gameData.find(g => g.id === droppedItemId);
+                
+                if (droppedItemId === game.id) {
+                    score++;
+                    dropZoneElement.classList.remove('incorrect');
+                    dropZoneElement.classList.add('correct');
+                    feedbackItem.className = 'quiz-feedback-correct';
+                    feedbackItem.innerHTML = `✅ ${game.name}: Correct! "${game.definition}"`;
+                } else {
+                    dropZoneElement.classList.remove('correct');
+                    dropZoneElement.classList.add('incorrect');
+                    feedbackItem.className = 'quiz-feedback-incorrect';
+                    
+                    let droppedDefinitionText = 'nothing';
+                    if (droppedGame && typeof droppedGame.definition === 'string') {
+                        droppedDefinitionText = droppedGame.definition;
+                    }
+                    feedbackItem.innerHTML = `❌ ${game.name}: Incorrect. You placed "${droppedDefinitionText}" here. The correct definition is: "${game.definition}"`;
+                }
+                quizFeedback.appendChild(feedbackItem);
+            });
+
+            quizScore.textContent = `You scored ${score} out of ${totalDefinitions}!`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Event listeners for all nav-buttons (main menu)
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetScreenId = e.target.dataset.targetScreen;
+                    navigateToScreenId(targetScreenId);
+                });
+            });
+
+            // "Back to Main Menu" buttons
+            document.querySelectorAll('button[onclick*="navigateToScreenId(\'screen-main-menu\')"]').forEach(button => {
+                button.onclick = null; // Remove existing inline onclick
+                button.addEventListener('click', () => navigateToScreenId('screen-main-menu'));
+            });
+            // "Back to Explore Games" buttons (for individual game details)
+            document.querySelectorAll('button[onclick*="navigateToScreenId(\'screen-explore-menu\')"]').forEach(button => {
+                button.onclick = null; // Remove existing inline onclick
+                button.addEventListener('click', () => navigateToScreenId('screen-explore-menu'));
+            });
+
+            showScreen(0); // Show the first screen (now main-menu) on load
+        });
+    </script>
+</body>
+</html>
+ 
